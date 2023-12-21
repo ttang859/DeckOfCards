@@ -16,25 +16,23 @@ class Card:
         return self.suit
     
 class Player:
-    def __init__(self, num_cards, curr_hand, bal):
+    def __init__(self, num_cards, curr_hand, curr_bet, bal):
         self.num_cards = num_cards #number of cards in hand
         self.curr_hand = curr_hand #array holding the cards in player's hand
-        self.hand_val = 0 #total value of player's cards
         self.bal = bal #player's balance
+        self.curr_bet = curr_bet
+        self.hand_val = 0 #total value of player's cards (add function to translate)
     def get_bal(self):
         return self.bal
     
-    def bet(self, amt):
-        if amt <= 0:
-            print('Bet has to be more than 0 ')
-        while not amt.isdigit:
-            amt = input('Enter numerical amount: ')
+    def place_bet(self, amt):
         self.bal -= amt
+        self.curr_bet = amt
         return amt
 
     def get_cards(self):
         for card in self.curr_hand:
-            print(card.get_card_id)
+            print(card.get_card_id() + ' ' + card.get_suit())
 
     # @staticmethod
     # def hit(self):
@@ -64,7 +62,15 @@ def shuffler(deck):
         deck.pop(rand_ind)
     return shuffled_deck
 
-
+def betting_phase(players):
+    for p in range(len(players)-1):
+        bet = input('Enter Betting Amount: ')
+        while not bet.isdigit():
+            bet = input('Please Enter Numerical Bet: ')
+        while int(bet) < 0 or int(bet) > players[p].get_bal():
+            bet = input('Bet is either too little or too much, enter new bet: ')
+        players[p].place_bet(int(bet))
+    return players
         
 
 def init():
@@ -77,33 +83,25 @@ def init():
             p_bal = input('Please enter balance for Player ' + str(p) + ': ')
             if p_bal.isdigit:
                 break
-        new_player = Player(0,[],p_bal)
+        new_player = Player(0,[],0,int(p_bal))
         players.append(new_player)
     #dealer is added last
-    dealer = Player(0,[],0)
+    dealer = Player(0,[],0,0)
     players.append(dealer)
     return players
 
 
-def gameplay(players):
-    #create stack that is the shuffled deck, do initial dealing, hits and stands, dealer hits, monetary values (array of tuples maybe)
-    
-    #initializing the deck (point where we recurse back?)
+def play_bj(players):
+    #initializing the deck
     deck = fresh_deck()
-    for card in deck:
-        print(card.card_id)
-        print(card.value)
-        print(card.suit)
     for _ in range(1, random.randint(2,6)):
         deck = shuffler(deck)
-    print('shuffled:')
-    for card in deck:
-        print(card.card_id)
-        print(card.value)
-        print(card.suit)
 
     #betting phase
-
+    players = betting_phase(players)
+    for player in players:
+        print(player.get_bal())
+        print(player.curr_bet)
     #dealing phase
 
     #hit, stand, double down, split
@@ -113,10 +111,10 @@ def gameplay(players):
         if replay.lower() == 'no':
             exit()
         elif replay.lower() == 'yes':
-            gameplay() #change this to loop back to another function rather than main
+            play_bj(players) #change this to loop back to another function rather than main
         else:
             replay = input('Invalid Entry; Play Again? Enter Yes or No: ')
 
 
 players = init()
-gameplay(players)
+play_bj(players)
