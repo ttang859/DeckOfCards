@@ -1,6 +1,6 @@
-from card_setup import Card, Player, Shuffler
-#import numpy as np
+import card_setup
 import random
+
 
 def init():
     num_players = input('Enter number of players: ')
