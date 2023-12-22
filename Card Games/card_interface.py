@@ -14,8 +14,7 @@ class Card:
         return self.suit
     
 class Player:
-    def __init__(self, num_cards, curr_hand, curr_bet, bal):
-        self.num_cards = num_cards #number of cards in hand
+    def __init__(self, curr_hand, curr_bet, bal):
         self.curr_hand = curr_hand #array holding the cards in player's hand
         self.bal = bal #player's balance
         self.curr_bet = curr_bet
@@ -34,18 +33,22 @@ class Player:
 
     def get_total(self):
         for card in self.curr_hand:
-            self.hand_val += Card.denomination.get(card.get_card_id())
+            if card.get_card_id() == 'J' or card.get_card_id() == 'Q'or card.get_card_id() == 'K':
+                self.hand_val += 10
+            else:
+                self.hand_val += Card.denomination.get(card.get_card_id())
+        
         return self.hand_val
     # @staticmethod
-    # def hit(self):
+    # def action_hit(self):
     #     pass
 
     # @staticmethod
-    # def double(self):
+    # def action_double(self):
     #     pass
     
     # @staticmethod
-    # def split():
+    # def action_split():
     #     pass
 
 def fresh_deck():
@@ -84,14 +87,13 @@ def init(): #initializes the game with number of players and each of their balan
             p_bal = input('Please enter balance for Player ' + str(p+1) + ': ')
             if p_bal.isdigit:
                 break
-        new_player = Player(0,[],0,int(p_bal))
+        new_player = Player([],0,int(p_bal))
         players.append(new_player)
-    #dealer is added last
-    dealer = Player(0,[],0,0)
-    players.append(dealer)
     return players
 
 def reset_hands(players):
     for player in players:
         player.curr_hand = []
+        player.curr_bet = 0
+        player.hand_val = 0
     return players
