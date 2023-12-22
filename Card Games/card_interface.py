@@ -37,7 +37,8 @@ class Player:
                 self.hand_val += 10
             else:
                 self.hand_val += Card.denomination.get(card.get_card_id())
-        if any(card.get_card_id() == 'A' for card in self.curr_hand):
+                
+        if any(card.get_card_id() == 'A' for card in self.curr_hand): #check for value of Ace since it depends on overall hand value
             if self.hand_val < 21: #for when a player has a soft hand (i.e. when the Ace represents a 1)
                 self.hand_val += 10 
             elif self.hand_val > 21: #for when a player has an Ace that was an 11 but could benefit from it being lower
