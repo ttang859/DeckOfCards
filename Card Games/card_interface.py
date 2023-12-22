@@ -1,17 +1,15 @@
 import random
 
 class Card:
-    nums = {'A': 1, '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, '10': 10, 'J': 11, 'Q': 12, 'K': 13}
+    denomination = {'A': 1, '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, '10': 10, 'J': 11, 'Q': 12, 'K': 13}
     suits = {'Spade': 1, 'Heart': 2, 'Club': 3, 'Diamond': 4}
-    def __init__(self, card_id, value, suit):
+
+    def __init__(self, card_id, suit):
         self.card_id = card_id #suit and number    
-        self.value = value #actual value
         self.suit = suit #diamond, clover, heart, spade
 
     def get_card_id(self):
         return self.card_id
-    def get_value(self):
-        return self.value
     def get_suit(self):
         return self.suit
     
@@ -30,10 +28,14 @@ class Player:
         self.curr_bet = amt
         return amt
 
-    def get_cards(self):
+    def show_cards(self):
         for card in self.curr_hand:
             print(card.get_card_id() + ' ' + card.get_suit())
 
+    def get_total(self):
+        for card in self.curr_hand:
+            self.hand_val += Card.denomination.get(card.get_card_id())
+        return self.hand_val
     # @staticmethod
     # def hit(self):
     #     pass
@@ -45,13 +47,13 @@ class Player:
     # @staticmethod
     # def split():
     #     pass
+
 def fresh_deck():
     deck = []
-    for card_num in Card.nums:
+    for card_num in Card.denomination:
         for card_suit in Card.suits:
-            deck.append(Card(card_num, Card.nums.get(card_num), card_suit))
+            deck.append(Card(card_num, card_suit))
     return deck
-
 
 def shuffler(deck):
     shuffled_deck = []
@@ -62,25 +64,24 @@ def shuffler(deck):
         deck.pop(rand_ind)
     return shuffled_deck
 
-def betting_phase(players):
-    for p in range(len(players)-1):
-        bet = input('Enter Betting Amount: ')
+def betting_phase(players): #iterates through the list of players to give each a chance to bet; excludes the dealer
+    for p in range(len(players)-1): 
+        bet = input('Enter Bet for Player ' + str(p+1) + ': ')
         while not bet.isdigit():
             bet = input('Please Enter Numerical Bet: ')
         while int(bet) < 0 or int(bet) > players[p].get_bal():
             bet = input('Bet is either too little or too much, enter new bet: ')
         players[p].place_bet(int(bet))
     return players
-        
 
-def init():
+def init(): #initializes the game with number of players and each of their balances
     num_players = input('Enter number of players: ')
     if not num_players.isdigit:
         init()
     players = []
     for p in range(int(num_players)):
         while True:
-            p_bal = input('Please enter balance for Player ' + str(p) + ': ')
+            p_bal = input('Please enter balance for Player ' + str(p+1) + ': ')
             if p_bal.isdigit:
                 break
         new_player = Player(0,[],0,int(p_bal))
@@ -90,31 +91,7 @@ def init():
     players.append(dealer)
     return players
 
-
-def play_bj(players):
-    #initializing the deck
-    deck = fresh_deck()
-    for _ in range(1, random.randint(2,6)):
-        deck = shuffler(deck)
-
-    #betting phase
-    players = betting_phase(players)
+def reset_hands(players):
     for player in players:
-        print(player.get_bal())
-        print(player.curr_bet)
-    #dealing phase
-
-    #hit, stand, double down, split
-
-    replay = input('Play Again? Enter Yes or No: ')
-    while True:
-        if replay.lower() == 'no':
-            exit()
-        elif replay.lower() == 'yes':
-            play_bj(players) #change this to loop back to another function rather than main
-        else:
-            replay = input('Invalid Entry; Play Again? Enter Yes or No: ')
-
-
-players = init()
-play_bj(players)
+        player.curr_hand = []
+    return players
