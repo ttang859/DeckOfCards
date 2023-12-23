@@ -1,5 +1,17 @@
+#https://bicyclecards.com/how-to-play/blackjack
+
 import random
-from card_interface import init, fresh_deck, shuffler, betting_phase, reset_hands, Player
+from card_interface import Player, init, fresh_deck, shuffler, betting_phase, reset_hands
+
+def display_cards(players):
+    for p in range(len(players)):
+        if p == len(players)-1:
+            print('Dealer\'s cards: ' + str(players[p].curr_hand[0].get_card()))
+            print('Face Down Card')
+        else:
+            print('Player ' + str(p+1) + '\'s cards: ')
+            players[p].show_cards()
+            print('Player ' + str(p+1) + '\'s total: ' + str(players[p].get_total()))
 
 def play_bj(players): #runs a game of blackjack
 
@@ -16,17 +28,10 @@ def play_bj(players): #runs a game of blackjack
         for player in players:
             player.curr_hand.append(deck.pop(0))
     
-    #display the cards
-            #filter list of players to see who's values are instantly 
-    for p in range(len(players)):
-        if p == len(players)-1:
-            print('Dealer\'s cards: ' + str(players[p].curr_hand[0].get_card_id()) + ' ' + str(players[p].curr_hand[0].get_suit()))
-            print('Face Down Card')
-        else:
-            print('Player ' + str(p+1) + '\'s cards: ')
-            players[p].show_cards()
-            print('Player ' + str(p+1) + '\'s total: ' + str(players[p].get_total()))
-    
+    #display the cards 
+    display_cards(players)
+
+    #dealer check for blackjack and filter list of players to see who's values are instantly
 
     #player's turn: show bal, hit, stand, double down
 

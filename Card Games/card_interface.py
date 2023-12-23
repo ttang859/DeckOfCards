@@ -10,8 +10,12 @@ class Card:
 
     def get_card_id(self):
         return self.card_id
+    
     def get_suit(self):
         return self.suit
+    
+    def get_card(self):
+        return self.card_id, self.suit
     
 class Player:
     def __init__(self, curr_hand, curr_bet, bal):
@@ -29,14 +33,14 @@ class Player:
 
     def show_cards(self):
         for card in self.curr_hand:
-            print(card.get_card_id() + ' ' + card.get_suit())
+            print(card.get_card())
 
     def get_total(self):
         for card in self.curr_hand:
-            if card.get_card_id() == 'J' or card.get_card_id() == 'Q'or card.get_card_id() == 'K':
+            if Card.denomination[card.get_card_id()] > 10:
                 self.hand_val += 10
             else:
-                self.hand_val += Card.denomination.get(card.get_card_id())
+                self.hand_val += Card.denomination[card.get_card_id()]
                 
         if any(card.get_card_id() == 'A' for card in self.curr_hand): #check for value of Ace since it depends on overall hand value
             if self.hand_val < 21: #for when a player has a soft hand (i.e. when the Ace represents a 1)
