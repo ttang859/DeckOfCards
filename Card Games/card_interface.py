@@ -18,11 +18,16 @@ class Card:
         return self.card_id, self.suit
     
 class Player:
-    def __init__(self, curr_hand, curr_bet, bal):
+    def __init__(self, pid, curr_hand, curr_bet, bal):
+        self.pid = pid
         self.curr_hand = curr_hand #array holding the cards in player's hand
         self.bal = bal #player's balance
         self.curr_bet = curr_bet
         self.hand_val = 0 #total value of player's cards (add function to translate)
+
+    def get_pid(self):
+        return self.pid
+
     def get_bal(self):
         return self.bal
     
