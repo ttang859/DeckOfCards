@@ -9,9 +9,9 @@ def display_cards(players):
             print('Dealer\'s cards: ' + str(players[p].curr_hand[0].get_card()))
             print('Face Down Card')
         else:
-            print('Player ' + str(p+1) + '\'s cards: ')
+            print('Player ' + str(players[p].get_pid()) + '\'s cards: ')
             players[p].show_cards()
-            print('Player ' + str(p+1) + '\'s total: ' + str(players[p].get_total()))
+            print('Player ' + str(players[p].get_pid()) + '\'s total: ' + str(players[p].get_total()))
 
 def play_bj(players): #runs a game of blackjack
 
@@ -49,6 +49,6 @@ def play_bj(players): #runs a game of blackjack
             replay = input('Invalid Entry; Play Again? Enter Yes or No: ')
 
 players = init()
-dealer = Player([],0,0)
+dealer = Player(len(players), [],0,0)
 players.append(dealer)
 play_bj(players)

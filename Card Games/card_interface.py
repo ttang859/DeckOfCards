@@ -83,7 +83,7 @@ def shuffler(deck):
 
 def betting_phase(players): #iterates through the list of players to give each a chance to bet; excludes the dealer
     for p in range(len(players)-1): 
-        bet = input('Enter Bet for Player ' + str(p+1) + ': ')
+        bet = input('Enter Bet for Player ' + str(players[p].get_pid()) + ': ')
         while not bet.isdigit():
             bet = input('Please Enter Numerical Bet: ')
         while int(bet) < 0 or int(bet) > players[p].get_bal():
@@ -101,7 +101,7 @@ def init(): #initializes the game with number of players and each of their balan
             p_bal = input('Please enter balance for Player ' + str(p+1) + ': ')
             if p_bal.isdigit:
                 break
-        new_player = Player([],0,int(p_bal))
+        new_player = Player(p+1,[],0,int(p_bal))
         players.append(new_player)
     return players
 
