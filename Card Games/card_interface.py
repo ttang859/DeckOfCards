@@ -25,33 +25,41 @@ class Player:
         self.curr_bet = curr_bet
         self.hand_val = 0 #total value of player's cards (add function to translate)
 
-    def get_pid(self):
+    def get_pid(self): #returns a player identifier
         return self.pid
 
-    def get_bal(self):
+    def get_bal(self): #returns a player's balance
         return self.bal
     
-    def place_bet(self, amt):
+    def get_bet(self):
+        return self.curr_bet
+
+    def place_bet(self, amt): #allows player to place a bet, deducts it from balance and 
         self.bal -= amt
         self.curr_bet = amt
         return amt
+
+    def pay_out(self,amt):
+        self.bal += amt
+        return self.bal
 
     def show_cards(self):
         for card in self.curr_hand:
             print(card.get_card())
 
-    def get_total(self):
+    def get_total(self): #troubleshoot when changing the Ace doesn't do anything (worried it might just subtract 10 when it doesn't need to)
+        self.hand_val = 0
         for card in self.curr_hand:
             if Card.denomination[card.get_card_id()] > 10:
                 self.hand_val += 10
             else:
                 self.hand_val += Card.denomination[card.get_card_id()]
                 
-        if any(card.get_card_id() == 'A' for card in self.curr_hand): #check for value of Ace since it depends on overall hand value
-            if self.hand_val < 21: #for when a player has a soft hand (i.e. when the Ace represents a 1)
-                self.hand_val += 10 
-            elif self.hand_val > 21: #for when a player has an Ace that was an 11 but could benefit from it being lower
-                self.hand_val -= 10
+        if any(card.get_card_id() == 'A' for card in self.curr_hand): #min, max it with both options
+            ace_one = self.hand_val
+            ace_eleven = ace_one + 10
+            if ace_eleven <= 21:
+                self.hand_val = ace_eleven
         return self.hand_val
     # @staticmethod
     # def action_hit(self):
@@ -64,6 +72,20 @@ class Player:
     # @staticmethod
     # def action_split():
     #     pass
+
+def init(): #initializes the game with number of players and each of their balances
+    num_players = input('Enter number of players: ')
+    if not num_players.isdigit:
+        init()
+    players = []
+    for p in range(int(num_players)):
+        while True:
+            p_bal = input('Please enter balance for Player ' + str(p+1) + ': ')
+            if p_bal.isdigit:
+                break
+        new_player = Player(p+1,[],0,int(p_bal))
+        players.append(new_player)
+    return players
 
 def fresh_deck():
     deck = []
@@ -89,20 +111,6 @@ def betting_phase(players): #iterates through the list of players to give each a
         while int(bet) < 0 or int(bet) > players[p].get_bal():
             bet = input('Bet is either too little or too much, enter new bet: ')
         players[p].place_bet(int(bet))
-    return players
-
-def init(): #initializes the game with number of players and each of their balances
-    num_players = input('Enter number of players: ')
-    if not num_players.isdigit:
-        init()
-    players = []
-    for p in range(int(num_players)):
-        while True:
-            p_bal = input('Please enter balance for Player ' + str(p+1) + ': ')
-            if p_bal.isdigit:
-                break
-        new_player = Player(p+1,[],0,int(p_bal))
-        players.append(new_player)
     return players
 
 def reset_hands(players):
