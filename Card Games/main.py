@@ -1,6 +1,6 @@
 #https://bicyclecards.com/how-to-play/blackjack
 
-import random
+import random, math
 from card_interface import Player, init, fresh_deck, shuffler, betting_phase, reset_hands
 
 def display_cards(players):
@@ -46,9 +46,11 @@ def play_again(players):
 
 def player_pay_outs(player, dealer):
     if player.get_total() <= 21:
-        if dealer.get_total() > 21 or (player.get_total() < dealer.get_total()):
+        if player.get_total() == 21 and len(player.curr_hand) == 2: #rewarding for a blackjack
+            player.pay_out(math.ceil(player.get_bet()*2.5))
+        elif dealer.get_total() > 21 or (player.get_total() > dealer.get_total()): #for when dealer busts or player beats dealer
             player.pay_out(player.get_bet()*2)
-        elif player.get_total() == dealer.get_total():
+        elif player.get_total() == dealer.get_total(): #a tie so tied players get their money back
             player.pay_out(player.get_bet())
     return player
 
@@ -76,7 +78,7 @@ def play_bj(players): #runs a game of blackjack
     if dealer.get_total() == 21:
         print('Dealer has hit a Blackjack')
         dealer.show_cards()
-        players = map(lambda p: p.pay_out(p.get_bet()) if p.get_total() == 21 else p.get_total() != 21, players) #need to check to see if this actually works
+        players = list(map(lambda p: p.pay_out(p.get_bet()) if p.get_total() == 21 else p.get_total() != 21, players)) #need to check to see if this actually works
         for player in players:
             print(str(player.get_pid()) + ' ' + str(player.get_bal()))
         play_again(players)
@@ -95,10 +97,9 @@ def play_bj(players): #runs a game of blackjack
             elif options.upper() == 'H':
                 player.curr_hand.append(deck.pop(0)) #hit
                 print(str(player.curr_hand[len(player.curr_hand)-1].get_card()) + ' ' + str(player.get_total()))
-                if player.get_total() >= 21:
-                    pass
             elif options.upper() == 'DD':
-                pass
+                player.pay_out(player.get_bet())
+                player.place_bet(player.get_bet()*2)
             else:
                 print('Incorrect Input')
 
@@ -112,9 +113,10 @@ def play_bj(players): #runs a game of blackjack
 
     #pay outs
     #filter out players who busted; if dealer busted pay everyone, if dealer did not bust, pay only those who were higher, if dealer hit blackjack, payback those who have 21 ()
-    players = map(lambda p: player_pay_outs(p,dealer), players)
+    players = list(map(lambda p: player_pay_outs(p,dealer), players))
     for player in players:
-        print(str(player.get_pid()) + ' ' + str(player.get_bal()))
+        if player.get_pid() != dealer.get_pid():
+            print('Player ' + str(player.get_pid()) + ': ' + str(player.get_bal()))
     #outcome
     play_again(players)
 

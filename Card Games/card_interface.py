@@ -11,9 +11,6 @@ class Card:
     def get_card_id(self):
         return self.card_id
     
-    def get_suit(self):
-        return self.suit
-    
     def get_card(self):
         return self.card_id, self.suit
     
@@ -88,7 +85,7 @@ def fresh_deck():
             deck.append(Card(card_num, card_suit))
     return deck
 
-def shuffler(deck):
+def shuffler(deck): #consider adding a cut
     shuffled_deck = []
     for _ in range(52):
         rand_ind = random.randint(0,len(deck)-1)
@@ -97,7 +94,7 @@ def shuffler(deck):
         deck.pop(rand_ind)
     return shuffled_deck
 
-def betting_phase(players): #iterates through the list of players to give each a chance to bet; excludes the dealer
+def betting_phase(players): #check for when bal is 0
     for p in range(len(players)-1): 
         bet = input('Enter Bet for Player ' + str(players[p].get_pid()) + ': ')
         while not bet.isdigit():
