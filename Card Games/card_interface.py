@@ -61,22 +61,16 @@ class Player:
             if ace_eleven <= 21:
                 self.hand_val = ace_eleven
         return self.hand_val
-    # @staticmethod
-    # def action_hit(self):
-    #     pass
-
-    # @staticmethod
-    # def action_double(self):
-    #     pass
-    
-    # @staticmethod
-    # def action_split():
-    #     pass
 
 def init(): #initializes the game with number of players and each of their balances
     num_players = input('Enter number of players: ')
-    if not num_players.isdigit:
-        init()
+    while True:
+        if not num_players.isdigit:
+            num_players = input('Enter number of players: ')
+        if int(num_players) > 6 or int(num_players) < 1:
+            num_players = input('Invalid Amount of Players; Enter number of players: ')
+        else:
+            break
     players = []
     for p in range(int(num_players)):
         while True:
