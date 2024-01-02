@@ -5,7 +5,9 @@ card_interface.py: holds the Card and Player object classes used for various typ
     - includes a class called Card which has a card's denomination and suit and a class called Player that has each player's hand, bet amount and balance
     - contains functions that simulate normal card game setup (i.e. shuffling a deck, betting, how many players)
 
-main.py: contains the game Blackjack and its functionalities with implementations of real world moves
+blackjack.py: contains the game Blackjack and its functionalities with implementations of real world moves
     - core functionality with functions that simulate Blackjack-specific plays such as the "hit" and "stand" actions
+
+main.py: runs the program (TODO: save game state)
 
 Cards folder: Snoopy Dog playing cards (credit to user on Flikr)
