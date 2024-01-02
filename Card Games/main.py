@@ -98,8 +98,12 @@ def play_bj(players): #runs a game of blackjack
                 player.curr_hand.append(deck.pop(0)) #hit
                 print(str(player.curr_hand[len(player.curr_hand)-1].get_card()) + ' ' + str(player.get_total()))
             elif options.upper() == 'DD':
-                player.pay_out(player.get_bet())
-                player.place_bet(player.get_bet()*2)
+                if player.get_total() >= 9 and player.get_total() <= 11:
+                    print('Player ' + str(player.get_pid()) + ' has doubled down')
+                    player.pay_out(player.get_bet())
+                    player.place_bet(player.get_bet()*2)
+                else:
+                    print('Unable to double down')
             else:
                 print('Incorrect Input')
 
