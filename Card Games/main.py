@@ -1,4 +1,4 @@
-import os
+from os import *
 from blackjack import *
 from card_interface import *
 

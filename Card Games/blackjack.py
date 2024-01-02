@@ -1,5 +1,3 @@
-#https://bicyclecards.com/how-to-play/blackjack
-
 import random, math
 from card_interface import Player, init, fresh_deck, shuffler, betting_phase, reset_hands
 
