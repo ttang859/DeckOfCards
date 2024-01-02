@@ -1,6 +1,5 @@
 import random, math
-from card_interface import Player, init, fresh_deck, shuffler, betting_phase, reset_hands
-
+from card_interface import *
 def display_cards(players):
     for player in players:
         if player.get_pid() == 0:
@@ -12,35 +11,21 @@ def display_cards(players):
             print('Player ' + str(player.get_pid()) + '\'s total: ' + str(player.get_total()))
 
 def play_again(players):
-    replay = input('Play Again? Enter Yes or No: ')
+    replay = input('Play Again? Y/N: ')
     while True:
-        if replay.lower() == 'no':
+        if replay.upper() == 'N':
+            # print('Saving Game...')
+            # save_file = open('Card Games/game_save.txt', 'w')
+            # for player in players:
+            #     save_file.write(str(player.get_pid()) + ':' + str(player.get_bal()) + '\n')
+            # save_file.close()
             break
-        elif replay.lower() == 'yes':
+        elif replay.upper() == 'Y':
             reset_hands(players) # need to clear current hands
             play_bj(players) #change this to loop back to another function rather than main
+            break
         else:
-            replay = input('Invalid Entry; Play Again? Enter Yes or No: ')
-
-# def player_action(players, card):
-#     for player in players:
-#         if(player.get_pid() == dealer.get_pid()):
-#             break
-#         while True:
-#             if player.get_total() >= 21:
-#                 break
-#             options = input('Player ' + str(player.get_pid()) + ', Hit (H), Stand (S) or Double Down (DD)?: ')
-#             if options.upper() == 'S':
-#                 break
-#             elif options.upper() == 'H':
-#                 player.curr_hand.append(card) #hit
-#                 print(str(player.curr_hand[len(player.curr_hand)-1].get_card()) + ' ' + str(player.get_total()))
-#                 if player.get_total() >= 21:
-#                     pass
-#             elif options.upper() == 'DD':
-#                 pass
-#             else:
-#                 print('Incorrect Input')
+            replay = input('Invalid Entry; Play Again? Y/N: ')
 
 def player_pay_outs(player, dealer):
     if player.get_total() <= 21:
@@ -52,7 +37,12 @@ def player_pay_outs(player, dealer):
             player.pay_out(player.get_bet())
     return player
 
-def play_bj(players): #runs a game of blackjack
+def dealer_bj(player):
+    if player.get_total() == 21:
+        player.pay_out(player.get_bet())
+    return player
+
+def play_bj(players): 
 
     #initializing the deck
     deck = fresh_deck()
@@ -76,13 +66,13 @@ def play_bj(players): #runs a game of blackjack
     if dealer.get_total() == 21:
         print('Dealer has hit a Blackjack')
         dealer.show_cards()
-        players = list(map(lambda p: p.pay_out(p.get_bet()) if p.get_total() == 21 else p.get_total() != 21, players)) #need to check to see if this actually works
+        players = list(map(lambda player: dealer_bj(player), players))
         for player in players:
             print(str(player.get_pid()) + ' ' + str(player.get_bal()))
         play_again(players)
+        return 0
 
     #player's turn: show bal, hit, stand, double down
-    # player_action(players, deck.pop(0))
     for player in players:
         if(player.get_pid() == dealer.get_pid()):
             break
@@ -114,11 +104,10 @@ def play_bj(players): #runs a game of blackjack
     print(dealer.get_total())
 
     #pay outs
-    #filter out players who busted; if dealer busted pay everyone, if dealer did not bust, pay only those who were higher, if dealer hit blackjack, payback those who have 21 ()
     players = list(map(lambda p: player_pay_outs(p,dealer), players))
     for player in players:
         if player.get_pid() != dealer.get_pid():
             print('Player ' + str(player.get_pid()) + ': ' + str(player.get_bal()))
 
     play_again(players)
-
+    return 0

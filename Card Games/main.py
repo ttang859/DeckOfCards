@@ -1,4 +1,4 @@
-from os import *
+import os
 from blackjack import *
 from card_interface import *
 
@@ -7,7 +7,7 @@ def parse_file(file):
     file_data = file.readlines()
     for line in file_data:
         colon = line.find(':')
-        pid = int(line[:colon])
+        pid = int(line[0:colon])
         bal = int(line[colon+1:])
         player_list.append(Player(pid,[],0,bal))
     return player_list
@@ -17,6 +17,7 @@ while True:
     if load_game.upper() == 'Y':
         save_file = open('Card Games/game_save.txt')
         players = parse_file(save_file)
+        save_file.close()
         break
     elif load_game.upper() == 'N':
         players = init()
@@ -25,10 +26,9 @@ while True:
         break
 
 play_bj(players)
-
+print('Saving Game...')
 save_file = open('Card Games/game_save.txt', 'w')
 for player in players:
-    save_file.write(str(player.get_pid()) + ':' + str(player.get_bal()) + ' \n')
+    save_file.write(str(player.get_pid()) + ':' + str(player.get_bal()) + '\n')
 save_file.close()
-
 exit()
